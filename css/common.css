@@ -1,7 +1,7 @@
 /* Interaction Library - 공통 스타일 */
 :root {
   --sidebar-width: 240px;
-  --header-height: 56px;
+  --header-height: 88px;
   --accent: #6366f1;
   --accent-hover: #4f46e5;
   --bg-sidebar: #fafafa;
@@ -16,33 +16,230 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: #fff;
   color: #111;
   min-height: 100vh;
 }
 
-/* 고정 헤더 - 보더 제거, 정렬 */
+/* 고정 헤더 - 전체 너비, 로고 좌측 / 검색바는 콘텐츠와 정렬 (모든 화면 공통) */
 .app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background: #fff;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 0;
   border-bottom: 0 none transparent;
   justify-content: flex-start;
 }
 
 .header-account {
   width: 210px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
 }
 
-.header-actions {
+.header-account:hover {
+  background: #f3f4f6;
+}
+
+.header-account .avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e4e4eb;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
 
+.header-account .name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.header-account .chevron {
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.btn-publish {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.btn-publish:hover {
+  background: var(--accent-hover);
+}
+
+.header-profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 12px;
+  text-decoration: none;
+  border-radius: 50%;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.header-profile:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.header-profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.header-profile-avatar-initial {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e4e4eb;
+  color: #374151;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-logo {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+/* 검색바: 콘텐츠와 x축 정렬(사이드바 너비만큼 왼쪽 여백 후 시작) */
+.header-search-bar {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 440px;
+  height: 54px;
+  margin: 0 0 0 8px;
+  padding-right: 8px;
+  background: #f4f4f7;
+  border-radius: 999px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+.header-search-bar .header-search-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 16px 0 24px;
+  border: 0;
+  background: transparent;
+  font-size: 14px;
+  color: #222222;
+}
+.header-search-bar .header-search-input::placeholder {
+  color: #222222;
+  opacity: 0.7;
+}
+.header-search-bar .header-search-input:focus {
+  outline: none;
+}
+.header-search-bar .header-search-filter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  padding: 0 16px;
+  border: 0;
+  border-left: 0 none transparent;
+  background: transparent;
+  font-size: 14px;
+  color: #222222;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.header-search-bar .header-search-filter svg {
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+}
+.header-search-bar .header-search-btn {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  margin: 8px 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+}
+.header-search-bar .header-search-btn:hover {
+  background: var(--accent-hover);
+}
+.header-search-bar .header-search-btn:active {
+  transform: scale(0.96);
+}
+.header-search-bar .header-search-btn svg {
+  width: 18px;
+  height: 18px;
+}
+/* 기존 단일 input 검색 (호환) */
 .header-search input {
   border: 0 none transparent;
   background-color: #f5f6f8;
   border-radius: 999px;
 }
 
-/* 고정 좌측 메뉴 */
+/* 고정 좌측 메뉴 - 상단바 아래부터, 콘텐츠와 동일한 y축 */
 .app-sidebar {
   position: fixed;
   left: 0;
@@ -72,14 +269,22 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 20px;
+  padding: 10px 20px 10px 16px;
   color: #374151;
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
-  border-radius: 0 8px 8px 0;
-  margin: 0 8px 0 0;
+  border-radius: 8px;
+  margin: 0 8px;
   transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-nav a .sidebar-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  color: inherit;
 }
 
 .sidebar-nav a:hover {
@@ -108,6 +313,18 @@ body {
 .gallery-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
+}
+
+/* 썸네일 안 미리보기만 스플라인은 0.5배 */
+.gallery-card .thumb .thumb-inner {
+  width: 100%;
+  height: 100%;
+}
+
+/* 스플라인: CORE7처럼 썸네일 100% 채움. 줌아웃은 미리보기 HTML 안에서 setZoom(0.5)로 처리 */
+.gallery-card.spline-card .thumb .thumb-inner {
+  width: 100%;
+  height: 100%;
 }
 
 /* 코드 블록 복사 버튼 */

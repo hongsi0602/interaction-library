@@ -3,22 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>라이브러리 등록 — 팀 인터랙션 라이브러리</title>
+  <title>Upload — Team Interaction Library</title>
   <link rel="stylesheet" href="css/common.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    .app-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: #fff; z-index: 50; display: flex; align-items: center; padding: 0 24px; gap: 24px; }
-    .header-account { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 8px; }
-    .header-account .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-    .header-account .name { font-size: 14px; font-weight: 500; color: #374151; }
-    .header-search { flex: 1; max-width: 400px; margin: 0 16px; }
-    .header-search input { width: 100%; height: 40px; padding: 0 16px 0 40px; font-size: 14px; }
-    .header-actions { display: flex; align-items: center; gap: 12px; }
-    .btn-publish { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; text-decoration: none; }
-    .header-profile-btn { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #8b5cf6); border: none; cursor: pointer; color: #fff; font-size: 14px; font-weight: 600; }
-
+    /* 상단바/좌측메뉴는 common.css */
     .form-back { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-muted); text-decoration: none; margin-bottom: 24px; }
     .form-back:hover { color: var(--accent); }
     .form-title { font-size: 24px; font-weight: 700; margin-bottom: 24px; color: #111; }
@@ -27,46 +18,53 @@
     .form-group:last-child { margin-bottom: 0; }
     .form-label { display: block; font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 8px; }
     .form-hint { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+    .form-hint code { font-size: 12px; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
     .form-input, .form-textarea { width: 100%; padding: 10px 14px; font-size: 14px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; }
     .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }
     .form-textarea { min-height: 120px; resize: vertical; }
+    .form-textarea-code { font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px; }
     .form-actions { display: flex; gap: 12px; margin-top: 24px; }
     .btn-submit { padding: 12px 24px; font-size: 14px; font-weight: 600; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; }
     .btn-submit:hover { background: var(--accent-hover); }
     .btn-cancel { padding: 12px 24px; font-size: 14px; font-weight: 500; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; cursor: pointer; text-decoration: none; }
     .btn-cancel:hover { background: #e5e7eb; }
+    .register-tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid var(--border); }
+    .register-tab { padding: 12px 20px; font-size: 14px; font-weight: 600; color: var(--text-muted); background: none; border: none; border-bottom: 3px solid transparent; margin-bottom: -2px; cursor: pointer; border-radius: 8px 8px 0 0; transition: color 0.2s, background 0.2s; }
+    .register-tab:hover { color: #374151; background: #f9fafb; }
+    .register-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .register-panel { display: none; }
+    .register-panel.active { display: block; }
+    .register-panel-title { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
   </style>
 </head>
 <body>
   <header class="app-header">
-    <div class="header-account">
-      <span class="avatar">H</span>
-      <span class="name">hongsi's Works...</span>
-    </div>
-    <div class="header-search">
-      <input type="search" placeholder="라이브러리 검색..." aria-label="라이브러리 검색">
+    <div class="header-logo">Motion</div>
+    <div class="header-search-bar">
+      <input type="search" class="header-search-input" placeholder="What are you looking for?" aria-label="검색">
+      <button type="button" class="header-search-filter" aria-haspopup="listbox" aria-label="필터">All <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button type="button" class="header-search-btn" aria-label="검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
     </div>
     <div class="header-actions">
-      <a href="register.html" class="btn-publish">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        라이브러리 등록
+      <a href="register.html" class="btn-publish">+ Upload</a>
+      <a href="profile.html" class="header-profile" aria-label="Profile settings">
+        <span class="header-profile-avatar-initial">H</span>
       </a>
-      <button type="button" class="header-profile-btn">H</button>
     </div>
   </header>
 
   <aside class="app-sidebar">
     <div class="sidebar-section">
       <nav class="sidebar-nav">
-        <a href="index.html">홈</a>
-        <a href="discover.html">디스커버</a>
-        <a href="my-files.html">마이파일</a>
-        <a href="notifications.html">알림</a>
+        <a href="index.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+        <a href="discover.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Discover</a>
+        <a href="my-files.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>My Files</a>
+        <a href="notifications.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Notifications</a>
       </nav>
     </div>
     <div class="sidebar-section">
       <nav class="sidebar-nav">
-        <a href="archive.html">아카이브</a>
+        <a href="archive.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>Archive</a>
       </nav>
     </div>
   </aside>
@@ -74,44 +72,202 @@
   <main class="app-main">
     <a href="index.html" class="form-back">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      목록으로
+      Back to list
     </a>
-    <h1 class="form-title">라이브러리 등록</h1>
-    <p style="color: var(--text-muted); margin-bottom: 24px;">실제 실행되는 인터랙션(Confetti, 3D 등) 또는 Spline URL을 등록하세요.</p>
+    <h1 class="form-title">Upload</h1>
+    <p style="color: var(--text-muted); margin-bottom: 24px;">업로드할 모션 종류를 선택한 뒤 해당 칸만 채우면 됩니다.</p>
 
-    <form class="form-card" id="registerForm" action="index.html" method="get">
+    <form class="form-card" id="registerForm">
       <div class="form-group">
         <label class="form-label" for="title">제목</label>
         <input type="text" id="title" name="title" class="form-input" placeholder="예: CORE7 3D 모션" required>
       </div>
       <div class="form-group">
         <label class="form-label" for="description">설명 (선택)</label>
-        <textarea id="description" name="description" class="form-textarea" placeholder="인터랙션에 대한 간단한 설명"></textarea>
+        <textarea id="description" name="description" class="form-textarea" placeholder="인터랙션에 대한 간단한 설명" rows="3"></textarea>
       </div>
-      <div class="form-group">
-        <label class="form-label" for="previewEmbed">미리보기 코드 (실제 인터랙션 실행)</label>
-        <textarea id="previewEmbed" name="previewEmbed" class="form-textarea" style="font-family: 'SF Mono', Monaco, monospace; font-size: 12px;" placeholder="상세 페이지에서 그대로 실행될 HTML/JS 코드. 예: canvas-confetti, Three.js, Spline embed 등 전체 문서를 넣으면 미리보기에서 실제로 재생됩니다." rows="10"></textarea>
-        <p class="form-hint">전체 HTML 문서(&lt;!DOCTYPE html&gt;~&lt;/html&gt;) 또는 스크립트가 포함된 조각을 넣으세요. <a href="https://magicui.design/docs/components/confetti" target="_blank" rel="noopener">Magic UI Confetti</a> 같은 라이브러리도 여기서 실행할 수 있습니다.</p>
+
+      <div class="register-tabs" role="tablist">
+        <button type="button" class="register-tab active" role="tab" aria-selected="true" data-tab="general">일반 모션</button>
+        <button type="button" class="register-tab" role="tab" aria-selected="false" data-tab="spline">Spline 모션</button>
       </div>
-      <div class="form-group">
-        <label class="form-label" for="previewUrl">또는 미리보기 URL (Spline 등)</label>
-        <input type="url" id="previewUrl" name="previewUrl" class="form-input" placeholder="https://my.spline.design/... (미리보기 코드가 없을 때만 사용)">
-        <p class="form-hint">미리보기 코드를 넣지 않으면 이 URL이 iframe으로 표시됩니다.</p>
+
+      <div id="panelGeneral" class="register-panel active" role="tabpanel">
+        <p class="register-panel-title">Confetti, Three.js 등 HTML/JS로 만든 인터랙션</p>
+        <div class="form-group">
+          <label class="form-label" for="previewEmbed">미리보기 코드</label>
+          <textarea id="previewEmbed" name="previewEmbed" class="form-textarea" style="font-family: 'SF Mono', Monaco, monospace; font-size: 12px;" placeholder="전체 HTML 문서 (예: canvas-confetti, Three.js 실행 코드)" rows="8"></textarea>
+          <p class="form-hint">상세 페이지에서 그대로 실행될 <code>&lt;!DOCTYPE html&gt;</code>~<code>&lt;/html&gt;</code> 전체를 넣으세요.</p>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="previewUrl">또는 미리보기 URL</label>
+          <input type="url" id="previewUrl" name="previewUrl" class="form-input" placeholder="https://... (미리보기 코드 대신 iframe으로 보여줄 주소)">
+          <p class="form-hint">미리보기 코드가 없을 때만 사용. 이 URL이 iframe으로 표시됩니다.</p>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="embedCode">사용할 코드</label>
+          <textarea id="embedCode" class="form-textarea" style="font-family: 'SF Mono', Monaco, monospace; font-size: 13px;" placeholder="<iframe src='...'></iframe> 또는 스크립트 코드"></textarea>
+          <p class="form-hint">팀원이 복사해서 쓸 iframe/스크립트 코드를 입력하세요.</p>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="thumbnail">지정 썸네일(선택)</label>
+          <input type="url" id="thumbnail" class="form-input" placeholder="https://...">
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label" for="embedCode">사용할 코드 (iframe / 스크립트 등)</label>
-        <textarea id="embedCode" name="embedCode" class="form-textarea" style="font-family: 'SF Mono', Monaco, monospace; font-size: 13px;" placeholder="<iframe src='...' ...></iframe>" required></textarea>
-        <p class="form-hint">팀원이 복사해서 바로 쓸 수 있는 iframe 또는 컴포넌트 코드를 입력하세요.</p>
+
+      <div id="panelSpline" class="register-panel" role="tabpanel">
+        <p class="register-panel-title">Spline에서 Export한 3D 씬</p>
+        <div class="form-group">
+          <label class="form-label" for="splineSceneUrl">Preview 썸네일</label>
+          <input type="url" id="splineSceneUrl" class="form-input" placeholder="https://prod.spline.design/.../scene.splinecode">
+          <p class="form-hint">Spline Export → Code → Vanilla js 에서 <code>app.load('...')</code> 안의 주소만 복사해 붙여넣으세요.</p>
+        </div>
+        <p class="register-panel-title" style="margin-top: 20px;">사용할 코드 (선택) — 필요한 것만 넣으세요</p>
+        <div class="form-group">
+          <label class="form-label" for="splineCodeVanilla">Vanilla JS (선택)</label>
+          <textarea id="splineCodeVanilla" class="form-textarea form-textarea-code" placeholder="Export → Vanilla js 에서 복사한 코드" rows="5"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="splineCodeReact">React (선택)</label>
+          <textarea id="splineCodeReact" class="form-textarea form-textarea-code" placeholder="Export → React 에서 복사한 코드" rows="5"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="splineCodeNextjs">Next.js (선택)</label>
+          <textarea id="splineCodeNextjs" class="form-textarea form-textarea-code" placeholder="Export → Next.js 에서 복사한 코드" rows="5"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="splineCodeIframe">iframe (선택)</label>
+          <textarea id="splineCodeIframe" class="form-textarea form-textarea-code" placeholder="공유 URL을 iframe으로 넣은 코드" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="thumbnailSpline">지정 썸네일(선택)</label>
+          <input type="url" id="thumbnailSpline" class="form-input" placeholder="https://...">
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label" for="thumbnail">썸네일 이미지 URL (선택)</label>
-        <input type="url" id="thumbnail" name="thumbnail" class="form-input" placeholder="https://...">
-      </div>
+
+      <input type="hidden" name="embedCode" id="embedCodeHidden">
+      <input type="hidden" name="embedCode_vanilla" id="embedCodeVanillaHidden">
+      <input type="hidden" name="embedCode_react" id="embedCodeReactHidden">
+      <input type="hidden" name="embedCode_nextjs" id="embedCodeNextjsHidden">
+      <input type="hidden" name="embedCode_iframe" id="embedCodeIframeHidden">
+      <input type="hidden" name="thumbnail" id="thumbnailHidden">
+
       <div class="form-actions">
-        <button type="submit" class="btn-submit">등록하기</button>
-        <a href="index.html" class="btn-cancel">취소</a>
+        <button type="submit" class="btn-submit">Upload</button>
+        <a href="index.html" class="btn-cancel">Cancel</a>
       </div>
     </form>
   </main>
+  <script>
+    (function() {
+      var SPLINE_PREVIEW_TEMPLATE = '<!DOCTYPE html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0;height:100%;width:100%;overflow:hidden;background:#0a0a0f}</style></head><body><canvas id="canvas3d"></canvas><script type="module">import{Application}from"https://cdn.jsdelivr.net/npm/@splinetool/runtime@1.12.61/build/runtime.js";var c=document.getElementById("canvas3d");var a=new Application(c);a.load("__URL__").then(function(){a.setZoom(0.5);});<\/script></body></html>';
+      var form = document.getElementById('registerForm');
+      var tabs = form.querySelectorAll('.register-tab');
+      var panelGeneral = document.getElementById('panelGeneral');
+      var panelSpline = document.getElementById('panelSpline');
+      var embedCode = document.getElementById('embedCode');
+      var embedCodeHidden = document.getElementById('embedCodeHidden');
+      var thumbnail = document.getElementById('thumbnail');
+      var thumbnailSpline = document.getElementById('thumbnailSpline');
+      var thumbnailHidden = document.getElementById('thumbnailHidden');
+      var splineSceneUrl = document.getElementById('splineSceneUrl');
+      var previewEmbed = document.getElementById('previewEmbed');
+      var splineCodeVanilla = document.getElementById('splineCodeVanilla');
+      var splineCodeReact = document.getElementById('splineCodeReact');
+      var splineCodeNextjs = document.getElementById('splineCodeNextjs');
+      var splineCodeIframe = document.getElementById('splineCodeIframe');
+      var embedCodeVanillaHidden = document.getElementById('embedCodeVanillaHidden');
+      var embedCodeReactHidden = document.getElementById('embedCodeReactHidden');
+      var embedCodeNextjsHidden = document.getElementById('embedCodeNextjsHidden');
+      var embedCodeIframeHidden = document.getElementById('embedCodeIframeHidden');
+
+      tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          var t = tab.getAttribute('data-tab');
+          tabs.forEach(function(tt) { tt.classList.remove('active'); tt.setAttribute('aria-selected', 'false'); });
+          tab.classList.add('active');
+          tab.setAttribute('aria-selected', 'true');
+          panelGeneral.classList.toggle('active', t === 'general');
+          panelSpline.classList.toggle('active', t === 'spline');
+        });
+      });
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var isSpline = panelSpline.classList.contains('active');
+        var titleEl = document.getElementById('title');
+        var descriptionEl = document.getElementById('description');
+        var title = titleEl && titleEl.value ? titleEl.value.trim() : '';
+        if (!title) {
+          alert('제목을 입력해 주세요.');
+          return;
+        }
+
+        var previewEmbedVal = '';
+        var previewUrlVal = null;
+        var embedCodeVal = '';
+        var embedCodesVal = {};
+        var thumbnailVal = '';
+
+        if (isSpline) {
+          var url = splineSceneUrl && splineSceneUrl.value ? splineSceneUrl.value.trim() : '';
+          if (url && previewEmbed) {
+            previewEmbedVal = SPLINE_PREVIEW_TEMPLATE.replace('__URL__', url.replace(/"/g, '&quot;'));
+          }
+          var v = splineCodeVanilla ? splineCodeVanilla.value.trim() : '';
+          var r = splineCodeReact ? splineCodeReact.value.trim() : '';
+          var n = splineCodeNextjs ? splineCodeNextjs.value.trim() : '';
+          var i = splineCodeIframe ? splineCodeIframe.value.trim() : '';
+          if (v) embedCodesVal['Vanilla JS'] = v;
+          if (r) embedCodesVal['React'] = r;
+          if (n) embedCodesVal['Next.js'] = n;
+          if (i) embedCodesVal['iframe'] = i;
+          embedCodeVal = v || r || n || i || '';
+          thumbnailVal = thumbnailSpline && thumbnailSpline.value ? thumbnailSpline.value.trim() : '';
+        } else {
+          if (!embedCode || !embedCode.value.trim()) {
+            alert('사용할 코드를 입력해 주세요.');
+            return;
+          }
+          previewEmbedVal = previewEmbed && previewEmbed.value ? previewEmbed.value.trim() : '';
+          previewUrlVal = document.getElementById('previewUrl').value ? document.getElementById('previewUrl').value.trim() : null;
+          if (!previewEmbedVal && previewUrlVal) previewUrlVal = previewUrlVal;
+          embedCodeVal = embedCode ? embedCode.value.trim() : '';
+          thumbnailVal = thumbnail && thumbnail.value ? thumbnail.value.trim() : '';
+        }
+
+        var item = {
+          id: 'upload-' + Date.now(),
+          title: title,
+          author: 'me',
+          authorAvatar: 'H',
+          views: 0,
+          likes: 0,
+          thumbnail: thumbnailVal || null,
+          previewUrl: previewUrlVal,
+          previewEmbed: previewEmbedVal || null,
+          embedCode: embedCodeVal,
+          embedCodes: Object.keys(embedCodesVal).length ? embedCodesVal : undefined,
+          description: descriptionEl && descriptionEl.value ? descriptionEl.value.trim() : '',
+          tags: [],
+          createdAt: new Date().toISOString().slice(0, 10),
+          isSpline: !!isSpline
+        };
+
+        try {
+          var list = [];
+          try {
+            var raw = localStorage.getItem('interaction-library-uploads');
+            if (raw) list = JSON.parse(raw);
+          } catch (err) {}
+          list.push(item);
+          localStorage.setItem('interaction-library-uploads', JSON.stringify(list));
+          window.location.href = 'index.html?uploaded=1';
+        } catch (err) {
+          alert('저장에 실패했습니다. ' + (err.message || ''));
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

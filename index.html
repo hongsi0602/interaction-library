@@ -3,106 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>홈 — 팀 인터랙션 라이브러리</title>
+  <title>Home — Team Interaction Library</title>
   <link rel="stylesheet" href="css/common.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* 고정 헤더 */
-    .app-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: var(--header-height);
-      background: #fff;
-      z-index: 50;
-      display: flex;
-      align-items: center;
-      padding: 0 24px;
-      gap: 24px;
-    }
-    .header-account {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .header-account:hover { background: #f3f4f6; }
-    .header-account .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), #8b5cf6);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .header-account .name { font-size: 14px; font-weight: 500; color: #374151; }
-    .header-account .chevron { color: var(--text-muted); margin-left: 4px; }
-    .header-search {
-      flex: 1;
-      max-width: 400px;
-      margin: 0 16px;
-    }
-    .header-search input {
-      width: 100%;
-      height: 40px;
-      padding: 0 16px 0 40px;
-      font-size: 14px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: 12px center;
-      transition: border-color 0.15s;
-    }
-    .header-search input::placeholder { color: var(--text-muted); }
-    .header-search input:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-    }
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .btn-publish {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      height: 40px;
-      padding: 0 18px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.15s;
-    }
-    .btn-publish:hover { background: var(--accent-hover); }
-    .header-profile-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      border: none;
-      cursor: pointer;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    /* 갤러리 그리드 */
+    /* 갤러리 그리드 (상단바/좌측메뉴는 common.css) */
     .gallery-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #111; }
     .gallery-grid {
       display: grid;
@@ -124,12 +31,7 @@
       overflow: hidden;
     }
     .gallery-card .thumb img,
-    .gallery-card .thumb iframe {
-      width: 100%;
-      height: 100%;
-      display: block;
-      border: 0;
-    }
+    .gallery-card .thumb iframe { width: 100%; height: 100%; display: block; border: 0; }
     .gallery-card .thumb img { object-fit: cover; }
     .gallery-card .thumb iframe { object-fit: cover; pointer-events: none; }
     .gallery-card .body { padding: 14px 16px; }
@@ -145,8 +47,8 @@
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #94a3b8, #64748b);
-      color: #fff;
+      background: #e4e4eb;
+      color: #374151;
       font-size: 11px;
       font-weight: 600;
       display: flex;
@@ -154,25 +56,31 @@
       justify-content: center;
     }
     .gallery-card .meta .stats { margin-left: auto; display: flex; gap: 12px; }
+    .gallery-card .thumb .thumb-inner { width: 100%; height: 100%; display: block; }
+    .gallery-card .thumb .thumb-inner img,
+    .gallery-card .thumb .thumb-inner iframe { width: 100%; height: 100%; display: block; border: 0; object-fit: cover; }
+    .gallery-card.spline-card .thumb .thumb-inner { width: 100%; height: 100%; }
   </style>
 </head>
 <body>
   <!-- 고정 헤더 -->
   <header class="app-header">
-    <div class="header-account" id="accountDropdown" role="button" aria-haspopup="true" aria-expanded="false">
-      <span class="avatar">H</span>
-      <span class="name">hongsi's Works...</span>
-      <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-    </div>
-    <div class="header-search">
-      <input type="search" id="searchInput" placeholder="라이브러리 검색..." aria-label="라이브러리 검색">
+    <div class="header-logo">Motion</div>
+    <div class="header-search-bar">
+      <input type="search" id="searchInput" class="header-search-input" placeholder="What are you looking for?" aria-label="검색">
+      <button type="button" class="header-search-filter" aria-haspopup="listbox" aria-label="필터">
+        All
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <button type="button" class="header-search-btn" aria-label="검색">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
     </div>
     <div class="header-actions">
-      <a href="register.html" class="btn-publish">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        라이브러리 등록
+      <a href="register.html" class="btn-publish">+ Upload</a>
+      <a href="profile.html" class="header-profile" aria-label="Profile settings">
+        <span class="header-profile-avatar-initial">H</span>
       </a>
-      <button type="button" class="header-profile-btn" aria-label="프로필">H</button>
     </div>
   </header>
 
@@ -180,22 +88,22 @@
   <aside class="app-sidebar">
     <div class="sidebar-section">
       <nav class="sidebar-nav">
-        <a href="index.html" class="active">홈</a>
-        <a href="discover.html">디스커버</a>
-        <a href="my-files.html">마이파일</a>
-        <a href="notifications.html">알림</a>
+        <a href="index.html" class="active"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+        <a href="discover.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Discover</a>
+        <a href="my-files.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>My Files</a>
+        <a href="notifications.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Notifications</a>
       </nav>
     </div>
     <div class="sidebar-section">
       <nav class="sidebar-nav">
-        <a href="archive.html">아카이브</a>
+        <a href="archive.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>Archive</a>
       </nav>
     </div>
   </aside>
 
   <!-- 메인: 갤러리 -->
   <main class="app-main">
-    <h1 class="gallery-title">전체 라이브러리</h1>
+    <h1 class="gallery-title">Library</h1>
     <div class="gallery-grid" id="galleryGrid">
       <!-- 카드들은 JS로 주입 -->
     </div>
@@ -220,9 +128,11 @@
       return '<img src="' + escapeHtml(lib.thumbnail || '') + '" alt="' + escapeHtml(lib.title) + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=600&q=80\'">';
     }
     function renderCards(libraries) {
-      grid.innerHTML = libraries.map((lib) =>
-        '<a href="detail.html#' + encodeURIComponent(lib.id) + '" class="gallery-card">' +
-          '<div class="thumb">' + thumbContent(lib) + '</div>' +
+      grid.innerHTML = libraries.map((lib) => {
+        var isSplineCard = lib.isSpline || (String(lib.id || '').indexOf('upload-') === 0 && lib.embedCodes && typeof lib.embedCodes === 'object' && Object.keys(lib.embedCodes).length > 0);
+        var cardClass = 'gallery-card' + (isSplineCard ? ' spline-card' : '');
+        return '<a href="detail.html#' + encodeURIComponent(lib.id) + '" class="' + cardClass + '">' +
+          '<div class="thumb"><div class="thumb-inner">' + thumbContent(lib) + '</div></div>' +
           '<div class="body">' +
             '<h2 class="card-title">' + escapeHtml(lib.title) + '</h2>' +
             '<div class="meta">' +
@@ -231,26 +141,46 @@
               '<span class="stats">' + lib.views + ' views · ' + lib.likes + ' likes</span>' +
             '</div>' +
           '</div>' +
-        '</a>'
-      ).join('');
+        '</a>';
+      }).join('');
       libraries.forEach(function(lib, i) {
         if (lib.previewEmbed && lib.previewEmbed.trim()) {
           var card = grid.children[i];
-          var iframe = card && card.querySelector('.thumb iframe[data-preview-embed]');
-          if (iframe) iframe.srcdoc = lib.previewEmbed;
+          var iframe = card && card.querySelector('.thumb-inner iframe[data-preview-embed]');
+          if (iframe) {
+            var embed = lib.previewEmbed;
+            var isSpline = lib.isSpline || (String(lib.id || '').indexOf('upload-') === 0 && lib.embedCodes && typeof lib.embedCodes === 'object' && Object.keys(lib.embedCodes).length > 0);
+            if (isSpline && embed.indexOf('setZoom(0.5)') === -1 && embed.indexOf('Application') !== -1 && embed.indexOf('.load(') !== -1) {
+              embed = embed.replace(/\.load\(\s*"([^"]*)"\s*\)\s*;/g, '.load("$1").then(function(){a.setZoom(0.5);});');
+              embed = embed.replace(/\.load\(\s*\'([^\']*)\'\s*\)\s*;/g, ".load('$1').then(function(){a.setZoom(0.5);});");
+            }
+            iframe.srcdoc = embed;
+          }
         }
       });
     }
 
-    renderCards(LIBRARIES);
+    var allLibraries = typeof getAllLibraries === 'function' ? getAllLibraries() : LIBRARIES;
+    renderCards(allLibraries);
 
     searchInput.addEventListener('input', () => {
       const q = searchInput.value.trim().toLowerCase();
+      const list = typeof getAllLibraries === 'function' ? getAllLibraries() : LIBRARIES;
       const filtered = q
-        ? LIBRARIES.filter((l) => l.title.toLowerCase().includes(q) || l.author.toLowerCase().includes(q))
-        : LIBRARIES;
+        ? list.filter((l) => l.title.toLowerCase().includes(q) || (l.author && l.author.toLowerCase().includes(q)))
+        : list;
       renderCards(filtered);
     });
+
+    if (window.location.search.indexOf('uploaded=1') !== -1) {
+      try { window.history.replaceState({}, '', 'index.html'); } catch (e) {}
+      var toast = document.createElement('div');
+      toast.setAttribute('role', 'status');
+      toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);';
+      toast.textContent = '업로드되었습니다.';
+      document.body.appendChild(toast);
+      setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 3000);
+    }
   </script>
 </body>
 </html>

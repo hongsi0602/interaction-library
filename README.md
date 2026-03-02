@@ -1,47 +1,68 @@
 # 팀 인터랙션 라이브러리
 
-팀원이 만든 Spline 3D 모션·인터랙션을 한곳에 모아 미리보기하고, 바로 사용 가능한 코드를 복사해 쓸 수 있는 사이트입니다.
+Spline 3D·인터랙션을 모아 미리보기하고, 사용 코드를 복사해 쓸 수 있는 사이트.
 
 ## 구조
 
-- **홈** (`index.html`) — 전체 라이브러리 갤러리 + 검색
-- **디스커버** (`discover.html`) — 라이브러리 탐색
-- **마이파일** (`my-files.html`) — 내가 등록한 라이브러리
-- **알림** (`notifications.html`) — 알림 (UI만 준비)
-- **아카이브** (`archive.html`) — 보관 목록 (UI만 준비)
-- **라이브러리 등록** (`register.html`) — 새 라이브러리 등록 폼
-- **상세** (`detail.html?id=1`) — 미리보기 + 코드 복사
+| 페이지 | 파일 | 설명 |
+|--------|------|------|
+| 홈 | `index.html` | 갤러리 + 검색 |
+| 디스커버 | `discover.html` | 탐색 |
+| 마이파일 | `my-files.html` | 내가 등록한 항목 |
+| 업로드 | `register.html` | 새 라이브러리 등록 |
+| 상세 | `detail.html#id` | 미리보기 + 코드 복사 |
+| 알림/아카이브 | `notifications.html`, `archive.html` | UI만 준비 |
 
-## 사용 방법
-
-1. `index.html`을 브라우저에서 열어 홈(갤러리)을 확인합니다.
-2. 카드를 클릭하면 상세 페이지로 이동해 **미리보기**와 **바로 사용 가능한 코드**를 볼 수 있습니다.
-3. 상단 **라이브러리 등록**으로 Spline 공유 URL과 iframe/코드를 등록합니다.
-
-## Spline 연동
-
-- Spline에서 Publish 후 **Share** 링크(예: `https://my.spline.design/...` 또는 `https://app.spline.design/community/file/...`)를 복사합니다.
-- 등록 시 **미리보기 URL**에 해당 링크를 넣으면 상세 페이지에서 iframe 미리보기가 재생됩니다.
-- **사용할 코드**에는 팀원이 그대로 붙여 넣을 iframe 예시를 넣으면 됩니다.
-
-```html
-<iframe src='https://my.spline.design/your-scene/' frameborder='0' width='100%' height='100%'></iframe>
-```
-
-## 로컬 실행
-
-별도 빌드 없이 HTML 파일을 직접 열면 됩니다. 로컬 파일로 열 때 일부 브라우저는 iframe/보안 제한으로 Spline 미리보기가 막힐 수 있으므로, 필요하면 로컬 서버를 띄워 사용하세요.
+## 실행
 
 ```bash
-cd interaction-library
+# 로컬 서버 (iframe/스크립트 제한 회피)
 npx serve .
 # 또는 python3 -m http.server 8080
 ```
 
-## 롤백
+브라우저에서 `index.html` 또는 `http://localhost:포트` 로 접속.
 
-작업을 특정 시점으로 되돌리려면 Git을 사용합니다. **체크포인트 저장**과 **롤백 방법**은 [ROLLBACK.md](ROLLBACK.md)를 참고하세요.
+## 데이터
 
-## 계정·데이터
+- 목업: `js/data.js` (LIBRARIES + localStorage 업로드)
+- 실제 백엔드 연동 시 Supabase/Firebase 등으로 교체 가능
 
-현재는 **목업 데이터**(`js/data.js`)만 사용합니다. 계정 로그인·실제 등록 저장을 쓰려면 백엔드(예: Supabase, Firebase) 또는 정적 JSON/API와 연동해 구현하면 됩니다.
+## 무료 배포 (정적 사이트)
+
+이 프로젝트는 HTML/CSS/JS만 있어서 **무료**로 배포할 수 있다. 아래 중 하나만 골라 쓰면 된다.
+
+### 1. GitHub Pages (추천)
+
+- **비용**: 무료
+- **URL**: `https://사용자명.github.io/interaction-library/`
+
+1. GitHub에 저장소 만들고 코드 푸시
+   ```bash
+   git remote add origin https://github.com/사용자명/interaction-library.git
+   git add .
+   git commit -m "Deploy"
+   git push -u origin main
+   ```
+2. 저장소 **Settings** → **Pages** → Source: **Deploy from a branch**
+3. Branch: `main`, Folder: **/ (root)** → Save
+4. 1–2분 후 위 URL로 접속
+
+### 2. Netlify
+
+- **비용**: 무료 (월 트래픽 등 제한 있음)
+- [netlify.com](https://www.netlify.com) → **Add new site** → **Import an existing project** → GitHub 연동 후 이 저장소 선택 → Build 설정 없이 **Deploy** (정적이라 빌드 불필요)
+
+### 3. Vercel
+
+- **비용**: 무료
+- [vercel.com](https://vercel.com) → **Add New** → **Project** → GitHub 연동 후 이 저장소 선택 → **Deploy** (기본 설정 그대로)
+
+---
+
+> GitHub Pages 사용 시 `.nojekyll` 파일이 있으면 Jekyll 없이 정적 파일만 서빙된다.
+
+## 참고
+
+- Spline 등록: [SPLINE-등록-가이드.md](SPLINE-등록-가이드.md)
+- 롤백: [ROLLBACK.md](ROLLBACK.md)
