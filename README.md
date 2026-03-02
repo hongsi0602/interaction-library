@@ -38,6 +38,10 @@ npx serve .
 # 또는 python3 -m http.server 8080
 ```
 
+## 롤백
+
+작업을 특정 시점으로 되돌리려면 Git을 사용합니다. **체크포인트 저장**과 **롤백 방법**은 [ROLLBACK.md](ROLLBACK.md)를 참고하세요.
+
 ## 계정·데이터
 
 현재는 **목업 데이터**(`js/data.js`)만 사용합니다. 계정 로그인·실제 등록 저장을 쓰려면 백엔드(예: Supabase, Firebase) 또는 정적 JSON/API와 연동해 구현하면 됩니다.
