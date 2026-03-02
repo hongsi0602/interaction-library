@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마이파일 — 팀 인터랙션 라이브러리</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .app-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: #fff; z-index: 50; display: flex; align-items: center; padding: 0 24px; gap: 24px; }
+    .header-account .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .header-search { flex: 1; max-width: 400px; }
+    .header-search input { width: 100%; height: 40px; padding: 0 16px 0 40px; font-size: 14px; }
+    .btn-publish { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; border: none; border-radius: 8px; text-decoration: none; }
+    .header-account { display: flex; align-items: center; gap: 8px; }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .header-profile-btn { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #8b5cf6); border: none; color: #fff; font-size: 14px; font-weight: 600; }
+    .gallery-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #111; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .gallery-card { background: #fff; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; text-decoration: none; color: inherit; display: block; transition: transform 0.2s, box-shadow 0.2s; }
+    .gallery-card:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -8px rgba(0,0,0,0.12); }
+    .gallery-card .thumb { aspect-ratio: 16/10; background: #f3f4f6; overflow: hidden; }
+    .gallery-card .thumb img,
+    .gallery-card .thumb iframe { width: 100%; height: 100%; display: block; border: 0; }
+    .gallery-card .thumb img { object-fit: cover; }
+    .gallery-card .thumb iframe { object-fit: cover; pointer-events: none; }
+    .gallery-card .body { padding: 14px 16px; }
+    .gallery-card .card-title { font-size: 15px; font-weight: 600; margin-bottom: 10px; color: #111; }
+    .gallery-card .meta { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-muted); }
+    .gallery-card .meta .user-avatar { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #94a3b8, #64748b); color: #fff; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+    .gallery-card .meta .stats { margin-left: auto; }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-account"><span class="avatar">H</span><span class="name">hongsi's Works...</span></div>
+    <div class="header-search"><input type="search" placeholder="라이브러리 검색..."></div>
+    <div class="header-actions">
+      <a href="register.html" class="btn-publish">+ 라이브러리 등록</a>
+      <button type="button" class="header-profile-btn">H</button>
+    </div>
+  </header>
+  <aside class="app-sidebar">
+    <div class="sidebar-section"><nav class="sidebar-nav"><a href="index.html">홈</a><a href="discover.html">디스커버</a><a href="my-files.html" class="active">마이파일</a><a href="notifications.html">알림</a></nav></div>
+    <div class="sidebar-section"><nav class="sidebar-nav"><a href="archive.html">아카이브</a></nav></div>
+  </aside>
+  <main class="app-main">
+    <h1 class="gallery-title">마이파일</h1>
+    <p style="color: var(--text-muted); margin-bottom: 24px;">내가 등록한 인터랙션 라이브러리입니다.</p>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </main>
+  <script src="js/data.js"></script>
+  <script>
+    function escapeHtml(s) { if (s == null) return ''; var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function thumbContent(lib) {
+      if (lib.previewEmbed && lib.previewEmbed.trim()) return '<iframe title="' + escapeHtml(lib.title) + ' 미리보기" sandbox="allow-scripts allow-same-origin" loading="lazy" data-preview-embed></iframe>';
+      if (lib.previewUrl && lib.previewUrl !== '#') return '<iframe src="' + escapeHtml(lib.previewUrl) + '" title="' + escapeHtml(lib.title) + ' 미리보기" loading="lazy"></iframe>';
+      return '<img src="' + escapeHtml(lib.thumbnail || '') + '" alt="' + escapeHtml(lib.title) + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=600&q=80\'">';
+    }
+    var myLibraries = getLibrariesForUser('hongsi');
+    const grid = document.getElementById('galleryGrid');
+    if (!myLibraries.length) {
+      grid.innerHTML = '<p style="color: var(--text-muted);">등록한 라이브러리가 없습니다. <a href="register.html">라이브러리 등록</a>에서 추가해 보세요.</p>';
+    } else {
+      grid.innerHTML = myLibraries.map(function(lib) {
+        return '<a href="detail.html#' + encodeURIComponent(lib.id) + '" class="gallery-card"><div class="thumb">' + thumbContent(lib) + '</div><div class="body"><h2 class="card-title">' + escapeHtml(lib.title) + '</h2><div class="meta"><span class="user-avatar">' + escapeHtml(lib.authorAvatar) + '</span><span>' + escapeHtml(lib.author) + '</span><span class="stats">' + lib.views + ' views · ' + lib.likes + ' likes</span></div></div></a>';
+      }).join('');
+      myLibraries.forEach(function(lib, i) {
+        if (lib.previewEmbed && lib.previewEmbed.trim()) { var card = grid.children[i]; var iframe = card && card.querySelector('.thumb iframe[data-preview-embed]'); if (iframe) iframe.srcdoc = lib.previewEmbed; }
+      });
+    }
+  </script>
+</body>
+</html>

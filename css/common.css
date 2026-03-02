@@ -1,0 +1,129 @@
+/* Interaction Library - 공통 스타일 */
+:root {
+  --sidebar-width: 240px;
+  --header-height: 56px;
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --bg-sidebar: #fafafa;
+  --border: #e5e7eb;
+  --text-muted: #6b7280;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #fff;
+  color: #111;
+  min-height: 100vh;
+}
+
+/* 고정 헤더 - 보더 제거, 정렬 */
+.app-header {
+  border-bottom: 0 none transparent;
+  justify-content: flex-start;
+}
+
+.header-account {
+  width: 210px;
+}
+
+.header-actions {
+  justify-content: center;
+}
+
+.header-search input {
+  border: 0 none transparent;
+  background-color: #f5f6f8;
+  border-radius: 999px;
+}
+
+/* 고정 좌측 메뉴 */
+.app-sidebar {
+  position: fixed;
+  left: 0;
+  top: var(--header-height);
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--header-height));
+  background: #fff;
+  border-right: 0 none transparent;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  padding: 12px 0;
+  border-bottom: 0 none transparent;
+}
+
+.sidebar-section:last-of-type {
+  margin-top: auto;
+  border-bottom: none;
+  border-top: 0 none transparent;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  color: #374151;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 0 8px 8px 0;
+  margin: 0 8px 0 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-nav a:hover {
+  background: #f3f4f6;
+  color: #111;
+}
+
+.sidebar-nav a.active {
+  background: #eef2ff;
+  color: var(--accent);
+}
+
+/* 메인 콘텐츠 영역 (헤더 + 사이드바 제외) */
+.app-main {
+  margin-left: var(--sidebar-width);
+  margin-top: var(--header-height);
+  min-height: calc(100vh - var(--header-height));
+  padding: 24px 32px 48px;
+}
+
+/* 카드 호버 */
+.gallery-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.gallery-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
+}
+
+/* 코드 블록 복사 버튼 */
+.copy-btn {
+  transition: opacity 0.15s, background 0.15s;
+}
+
+.copy-btn:hover {
+  background: #e0e7ff;
+}
+
+.copy-btn.copied {
+  background: #10b981;
+  color: #fff;
+}
+
+[x-cloak] {
+  display: none !important;
+}
