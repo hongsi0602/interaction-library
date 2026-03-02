@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){var p=location.pathname;if(p&&!p.endsWith('/')){var dir=p.replace(/\/[^/]*$/, '')+'/';var b=document.createElement('base');b.href=location.origin+dir;document.head.insertBefore(b,document.head.firstChild);}})();</script>
+  <title>Project — Team Interaction Library</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    .detail-back { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-muted); text-decoration: none; margin-bottom: 24px; padding: 8px 0; border-radius: 8px; transition: color 0.2s, background 0.2s; }
+    .detail-back:hover { color: var(--accent); background: #f9fafb; }
+    .project-detail-title { font-size: 22px; font-weight: 700; margin-bottom: 24px; color: #111; }
+    .project-detail-actions { margin-bottom: 24px; }
+    .project-detail-actions a { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--accent); text-decoration: none; }
+    .project-detail-actions a:hover { text-decoration: underline; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .project-card-wrap { position: relative; }
+    .project-card-wrap .gallery-card { display: block; background: #fff; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; text-decoration: none; color: inherit; }
+    .project-card-wrap .gallery-card:hover { border-color: var(--accent); }
+    .project-card-wrap .thumb { aspect-ratio: 16/10; background: #f3f4f6; overflow: hidden; }
+    .project-card-wrap .thumb img,
+    .project-card-wrap .thumb iframe { width: 100%; height: 100%; display: block; border: 0; object-fit: cover; pointer-events: none; }
+    .project-card-wrap .gallery-card.spline-card .thumb .thumb-inner { width: 100%; height: 100%; }
+    .project-card-wrap .body { padding: 14px 16px; }
+    .project-card-wrap .card-title { font-size: 15px; font-weight: 600; margin-bottom: 10px; line-height: 1.3; color: #111; }
+    .project-card-wrap .meta { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-muted); }
+    .project-card-wrap .user-avatar { width: 24px; height: 24px; border-radius: 50%; background: #e4e4eb; color: #374151; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+    .project-card-wrap .stats { margin-left: auto; }
+    .btn-remove-from-project { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; border: none; border-radius: 8px; background: rgba(0,0,0,0.5); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; transition: background 0.2s; }
+    .btn-remove-from-project:hover { background: #b91c1c; }
+    .project-empty-refs { padding: 48px 24px; text-align: center; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 12px; background: #fafafa; margin-top: 24px; }
+    .project-empty-refs p { margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <button type="button" class="sidebar-toggle" aria-label="메뉴 열기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <div class="header-logo">Reference</div>
+    <div class="header-search-bar">
+      <input type="search" class="header-search-input" placeholder="What are you looking for?" aria-label="검색">
+      <button type="button" class="header-search-filter" aria-haspopup="listbox" aria-label="필터">All <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button type="button" class="header-search-btn" aria-label="검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+    </div>
+    <div class="header-actions">
+      <a href="register.html" class="btn-publish">+ Upload</a>
+      <a href="profile.html" class="header-profile" aria-label="Profile settings">
+        <span class="header-profile-avatar-initial">H</span>
+      </a>
+    </div>
+  </header>
+  <aside class="app-sidebar">
+    <div class="sidebar-section">
+      <nav class="sidebar-nav">
+        <a href="index.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+        <a href="project.html" class="active"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Project</a>
+        <a href="my-files.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>My Files</a>
+        <a href="notifications.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Notifications</a>
+      </nav>
+    </div>
+    <div class="sidebar-section">
+      <nav class="sidebar-nav">
+        <a href="archive.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>Archive</a>
+      </nav>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" aria-hidden="true"></div>
+  <main class="app-main">
+    <a href="project.html" class="detail-back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      프로젝트 목록
+    </a>
+    <h1 class="project-detail-title" id="projectTitle">—</h1>
+    <div class="project-detail-actions">
+      <a href="index.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> 레퍼런스 추가 (라이브러리에서 선택)</a>
+    </div>
+    <div class="gallery-grid" id="projectGrid"></div>
+    <div class="project-empty-refs" id="projectEmptyRefs" style="display: none;">
+      <p>이 프로젝트에 저장된 레퍼런스가 없습니다.</p>
+      <a href="index.html">라이브러리에서 레퍼런스 추가하기</a>
+    </div>
+  </main>
+  <script src="js/common.js"></script>
+  <script src="js/data.js"></script>
+  <script>
+    function escapeHtml(s) { if (s == null) return ''; var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function thumbContent(lib) {
+      if (lib.previewEmbed && lib.previewEmbed.trim()) return '<iframe title="' + escapeHtml(lib.title) + ' 미리보기" sandbox="allow-scripts allow-same-origin" loading="lazy" data-preview-embed></iframe>';
+      if (lib.previewUrl && lib.previewUrl !== '#') return '<iframe src="' + escapeHtml(lib.previewUrl) + '" title="' + escapeHtml(lib.title) + ' 미리보기" loading="lazy"></iframe>';
+      return '<img src="' + escapeHtml(lib.thumbnail || '') + '" alt="' + escapeHtml(lib.title) + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=600&q=80\'">';
+    }
+
+    var projectId = '';
+    try {
+      var hash = location.hash ? String(location.hash).replace(/^#/, '').trim() : '';
+      if (hash) projectId = decodeURIComponent(hash);
+    } catch (e) {}
+    var project = projectId && typeof getProjectById === 'function' ? getProjectById(projectId) : null;
+    var grid = document.getElementById('projectGrid');
+    var titleEl = document.getElementById('projectTitle');
+    var emptyRefs = document.getElementById('projectEmptyRefs');
+
+    if (!project) {
+      titleEl.textContent = '프로젝트를 찾을 수 없습니다.';
+      emptyRefs.style.display = 'block';
+      emptyRefs.innerHTML = '<p>목록에서 프로젝트를 선택해 주세요.</p><a href="project.html">프로젝트 목록으로</a>';
+    } else {
+      titleEl.textContent = project.name;
+      function renderRefs() {
+        var refIds = getProjectRefs(projectId);
+        if (refIds.length === 0) {
+          grid.innerHTML = '';
+          grid.style.display = 'none';
+          emptyRefs.style.display = 'block';
+          return;
+        }
+        emptyRefs.style.display = 'none';
+        grid.style.display = 'grid';
+        var libs = refIds.map(function (id) { return getLibraryById(id); }).filter(Boolean);
+        grid.innerHTML = libs.map(function (lib) {
+          var isSpline = lib.isSpline || (String(lib.id || '').indexOf('upload-') === 0 && lib.embedCodes && Object.keys(lib.embedCodes || {}).length > 0);
+          return '<div class="project-card-wrap" data-lib-id="' + escapeHtml(lib.id) + '">' +
+            '<button type="button" class="btn-remove-from-project" aria-label="프로젝트에서 제거" title="프로젝트에서 제거">×</button>' +
+            '<a href="detail.html#' + encodeURIComponent(lib.id) + '" class="gallery-card' + (isSpline ? ' spline-card' : '') + '">' +
+            '<div class="thumb"><div class="thumb-inner">' + thumbContent(lib) + '</div></div>' +
+            '<div class="body">' +
+            '<h2 class="card-title">' + escapeHtml(lib.title) + '</h2>' +
+            '<div class="meta"><span class="user-avatar">' + escapeHtml(lib.authorAvatar) + '</span><span>' + escapeHtml(lib.author) + '</span><span class="stats">' + (lib.views || 0) + ' views · ' + (lib.likes || 0) + ' likes</span></div>' +
+            '</div></a></div>';
+        }).join('');
+        libs.forEach(function (lib, i) {
+          if (lib.previewEmbed && lib.previewEmbed.trim()) {
+            var wrap = grid.children[i];
+            var iframe = wrap && wrap.querySelector('.thumb-inner iframe[data-preview-embed]');
+            if (iframe) {
+              var embed = lib.previewEmbed;
+              var isSpline = lib.isSpline || (String(lib.id || '').indexOf('upload-') === 0 && lib.embedCodes && typeof lib.embedCodes === 'object' && Object.keys(lib.embedCodes || {}).length > 0);
+              if (isSpline && embed.indexOf('setZoom(0.5)') === -1 && embed.indexOf('Application') !== -1 && embed.indexOf('.load(') !== -1) {
+                embed = embed.replace(/\.load\(\s*"([^"]*)"\s*\)\s*;?/g, '.load("$1").then(function(){a.setZoom(0.5);});');
+                embed = embed.replace(/\.load\(\s*\'([^\']*)\'\s*\)\s*;?/g, ".load('$1').then(function(){a.setZoom(0.5);});");
+              }
+              iframe.srcdoc = embed;
+            }
+          }
+        });
+        grid.querySelectorAll('.btn-remove-from-project').forEach(function (btn) {
+          btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var wrap = this.closest('.project-card-wrap');
+            var id = wrap && wrap.getAttribute('data-lib-id');
+            if (id && typeof removeRefFromProject === 'function') {
+              removeRefFromProject(projectId, id);
+              renderRefs();
+            }
+          });
+        });
+      }
+      renderRefs();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){var p=location.pathname;if(p&&!p.endsWith('/')){var dir=p.replace(/\/[^/]*$/, '')+'/';var b=document.createElement('base');b.href=location.origin+dir;document.head.insertBefore(b,document.head.firstChild);}})();</script>
+  <title>Project — Team Interaction Library</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    .page-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: #111; }
+    .page-desc { color: var(--text-muted); margin-bottom: 24px; font-size: 14px; }
+    .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; align-items: start; }
+    .project-card-create-wrap { width: 100%; }
+    .project-card-create-preview { width: 100%; aspect-ratio: 3 / 2; display: flex; align-items: center; justify-content: center; border: 2px dashed #c7d2fe; border-radius: 12px; background: #fff; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+    .project-card-create-preview:hover { border-color: var(--accent); background: #f5f3ff; }
+    .project-card-create { display: inline-flex; align-items: center; justify-content: center; padding: 0; border: none; background: none; font-size: 14px; font-weight: 600; color: var(--accent); cursor: pointer; font-family: inherit; }
+    .project-card-create svg { flex-shrink: 0; margin-right: 8px; }
+    .project-card-create-body { padding: 12px 0 0; min-height: 44px; }
+    .project-card { display: block; text-decoration: none; color: inherit; transition: opacity 0.2s; }
+    .project-card:hover { opacity: 0.85; }
+    .project-card:hover .project-card-name { color: var(--accent); }
+    /* 프리뷰 컨테이너는 정방형 고정 아님. 열 2:1, 행 1:1 → 왼쪽(2행 합침)·오른쪽 위·아래 셀이 각각 정사각형이 되도록 3:2 비율 */
+    .project-card-preview { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 3px; width: 100%; aspect-ratio: 3 / 2; background: transparent; }
+    .project-card-preview .preview-cell { min-height: 0; overflow: hidden; }
+    .project-card-preview .preview-cell.cell-left { grid-row: span 2; border-radius: 12px 0 0 12px; }
+    .project-card-preview .preview-cell.cell-top-right { border-radius: 0 12px 0 0; }
+    .project-card-preview .preview-cell.cell-bottom-right { border-radius: 0 0 12px 0; }
+    .project-card-preview .preview-cell .cell-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .project-card-preview .preview-cell.cell-placeholder,
+    .project-card-preview .preview-cell.cell-placeholder-1,
+    .project-card-preview .preview-cell.cell-placeholder-2,
+    .project-card-preview .preview-cell.cell-placeholder-3 { background: #F4F4F7; }
+    .project-card-preview .preview-cell-empty { grid-column: 1 / -1; grid-row: 1 / -1; background: #F4F4F7; border-radius: 12px 12px 0 0; }
+    .project-card-body { padding: 12px 0 0; }
+    .project-card-name { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: #111; line-height: 1.3; }
+    .project-card-meta { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+    .create-modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.4); align-items: center; justify-content: center; padding: 24px; }
+    .create-modal.open { display: flex; }
+    .create-modal-box { background: #fff; border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 24px 48px rgba(0,0,0,0.15); }
+    .create-modal-box h2 { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #111; }
+    .create-modal-box input { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; margin-bottom: 16px; box-sizing: border-box; }
+    .create-modal-box input:focus { outline: none; border-color: var(--accent); }
+    .create-modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    .create-modal-actions button { padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; border: none; }
+    .create-modal-actions .btn-cancel { background: #f3f4f6; color: #374151; }
+    .create-modal-actions .btn-submit { background: var(--accent); color: #fff; }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <button type="button" class="sidebar-toggle" aria-label="메뉴 열기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <div class="header-logo">Reference</div>
+    <div class="header-search-bar">
+      <input type="search" class="header-search-input" placeholder="What are you looking for?" aria-label="검색">
+      <button type="button" class="header-search-filter" aria-haspopup="listbox" aria-label="필터">All <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button type="button" class="header-search-btn" aria-label="검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+    </div>
+    <div class="header-actions">
+      <a href="register.html" class="btn-publish">+ Upload</a>
+      <a href="profile.html" class="header-profile" aria-label="Profile settings">
+        <span class="header-profile-avatar-initial">H</span>
+      </a>
+    </div>
+  </header>
+  <aside class="app-sidebar">
+    <div class="sidebar-section">
+      <nav class="sidebar-nav">
+        <a href="index.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+        <a href="project.html" class="active"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Project</a>
+        <a href="my-files.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>My Files</a>
+        <a href="notifications.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Notifications</a>
+      </nav>
+    </div>
+    <div class="sidebar-section">
+      <nav class="sidebar-nav">
+        <a href="archive.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>Archive</a>
+      </nav>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" aria-hidden="true"></div>
+  <main class="app-main">
+    <h1 class="page-title">Project</h1>
+    <p class="page-desc">프로젝트별로 레퍼런스를 모아 관리하세요.</p>
+    <div class="project-grid" id="projectGrid"></div>
+  </main>
+
+  <div class="create-modal" id="createModal" role="dialog" aria-labelledby="createModalTitle" aria-modal="true">
+    <div class="create-modal-box">
+      <h2 id="createModalTitle">새 프로젝트</h2>
+      <input type="text" id="createProjectName" placeholder="프로젝트 이름" maxlength="100" aria-label="프로젝트 이름">
+      <div class="create-modal-actions">
+        <button type="button" class="btn-cancel" id="createModalCancel">취소</button>
+        <button type="button" class="btn-submit" id="createModalSubmit">만들기</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/data.js"></script>
+  <script>
+    var projectGrid = document.getElementById('projectGrid');
+    var createModal = document.getElementById('createModal');
+    var createProjectName = document.getElementById('createProjectName');
+
+    var createCardHtml = '<div class="project-card-create-wrap">' +
+      '<div class="project-card-create-preview" id="btnCreateProject" role="button" tabindex="0" aria-label="프로젝트 만들기">' +
+      '<span class="project-card-create">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>' +
+      '프로젝트 만들기</span></div>' +
+      '<div class="project-card-create-body"></div></div>';
+    function formatTimeAgo(iso) {
+      if (!iso) return '';
+      var d = new Date(iso);
+      var now = new Date();
+      var diff = Math.floor((now - d) / (24 * 60 * 60 * 1000));
+      if (diff < 1) return '오늘';
+      if (diff === 1) return '1일 전';
+      if (diff < 7) return diff + '일 전';
+      if (diff < 30) return Math.floor(diff / 7) + '주 전';
+      if (diff < 365) return Math.floor(diff / 30) + 'mo';
+      return Math.floor(diff / 365) + '년 전';
+    }
+
+    function projectPreviewHtml(refIds) {
+      var recentFirst = (refIds || []).slice().reverse();
+      var libs = recentFirst.slice(0, 3).map(function (id) { return getLibraryById(id); }).filter(Boolean);
+      var placeholders = ['cell-placeholder-1', 'cell-placeholder-2', 'cell-placeholder-3'];
+      var positions = ['cell-left', 'cell-top-right', 'cell-bottom-right'];
+      var cells = [];
+      for (var i = 0; i < 3; i++) {
+        var lib = libs[i];
+        var cls = 'preview-cell ' + positions[i];
+        var inner = '';
+        if (lib) {
+          if (lib.previewEmbed && lib.previewEmbed.trim()) {
+            inner = '<iframe class="cell-img" sandbox="allow-scripts allow-same-origin" loading="lazy" data-preview-embed data-lib-id="' + escapeHtml(lib.id) + '" style="border:0;width:100%;height:100%;display:block;"></iframe>';
+          } else if (lib.previewUrl && lib.previewUrl !== '#') {
+            inner = '<iframe class="cell-img" src="' + escapeHtml(lib.previewUrl) + '" title="" loading="lazy" style="border:0;width:100%;height:100%;display:block;"></iframe>';
+          } else if (lib.thumbnail) {
+            inner = '<img class="cell-img" src="' + escapeHtml(lib.thumbnail) + '" alt="" loading="lazy">';
+          } else {
+            inner = '<img class="cell-img" src="https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=600&q=80" alt="" loading="lazy">';
+          }
+        } else {
+          cls += ' cell-placeholder ' + placeholders[i];
+        }
+        cells.push('<div class="' + cls + '">' + inner + '</div>');
+      }
+      return '<div class="project-card-preview">' + cells.join('') + '</div>';
+    }
+
+    function injectPreviewEmbeds() {
+      document.querySelectorAll('.project-card-preview iframe[data-preview-embed]').forEach(function (iframe) {
+        var id = iframe.getAttribute('data-lib-id');
+        var lib = typeof getLibraryById === 'function' ? getLibraryById(id) : null;
+        if (lib && lib.previewEmbed) {
+          var embed = lib.previewEmbed;
+          var isSpline = lib.isSpline || (String(lib.id || '').indexOf('upload-') === 0 && lib.embedCodes && typeof lib.embedCodes === 'object' && Object.keys(lib.embedCodes || {}).length > 0);
+          if (isSpline && embed.indexOf('setZoom(0.5)') === -1 && embed.indexOf('Application') !== -1 && embed.indexOf('.load(') !== -1) {
+            embed = embed.replace(/\.load\(\s*"([^"]*)"\s*\)\s*;?/g, '.load("$1").then(function(){a.setZoom(0.5);});');
+            embed = embed.replace(/\.load\(\s*\'([^\']*)\'\s*\)\s*;?/g, ".load('$1').then(function(){a.setZoom(0.5);});");
+          }
+          iframe.srcdoc = embed;
+        }
+      });
+    }
+
+    function renderProjects() {
+      var projects = typeof getProjects === 'function' ? getProjects() : [];
+      var cards = createCardHtml + projects.map(function (p) {
+        var refIds = typeof getProjectRefs === 'function' ? getProjectRefs(p.id) : [];
+        var count = refIds.length;
+        var timeAgo = formatTimeAgo(p.createdAt);
+        var metaText = count + '개 레퍼런스' + (timeAgo ? ' · ' + timeAgo : '');
+        return '<a href="project-detail.html#' + encodeURIComponent(p.id) + '" class="project-card">' +
+          projectPreviewHtml(refIds) +
+          '<div class="project-card-body">' +
+            '<div class="project-card-name">' + escapeHtml(p.name) + '</div>' +
+            '<div class="project-card-meta">' + escapeHtml(metaText) + '</div>' +
+          '</div></a>';
+      }).join('');
+      projectGrid.innerHTML = cards;
+      injectPreviewEmbeds();
+      var btn = document.getElementById('btnCreateProject');
+      if (btn) {
+        btn.addEventListener('click', openCreateModal);
+        btn.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCreateModal(); }
+        });
+      }
+    }
+
+    function escapeHtml(s) {
+      if (s == null) return '';
+      var d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function openCreateModal() {
+      createProjectName.value = '';
+      createModal.classList.add('open');
+      createProjectName.focus();
+    }
+
+    function closeCreateModal() {
+      createModal.classList.remove('open');
+    }
+
+    function doCreateProject() {
+      var name = createProjectName.value.trim() || '새 프로젝트';
+      if (typeof createProject !== 'function') return;
+      var id = createProject(name);
+      closeCreateModal();
+      renderProjects();
+      location.href = 'project-detail.html#' + encodeURIComponent(id);
+    }
+
+    document.getElementById('createModalCancel').addEventListener('click', closeCreateModal);
+    document.getElementById('createModalSubmit').addEventListener('click', doCreateProject);
+    createProjectName.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') doCreateProject();
+      if (e.key === 'Escape') closeCreateModal();
+    });
+    createModal.addEventListener('click', function (e) {
+      if (e.target === createModal) closeCreateModal();
+    });
+
+    renderProjects();
+  </script>
+</body>
+</html>

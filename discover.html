@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Discover — Team Interaction Library</title>
+  <script>(function(){var p=location.pathname;if(p&&!p.endsWith('/')){var dir=p.replace(/\/[^/]*$/, '')+'/';var b=document.createElement('base');b.href=location.origin+dir;document.head.insertBefore(b,document.head.firstChild);}})();</script>
+  <title>Project — Team Interaction Library</title>
+  <script>location.replace('project.html');</script>
   <link rel="stylesheet" href="css/common.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,6 +34,9 @@
 </head>
 <body>
   <header class="app-header">
+    <button type="button" class="sidebar-toggle" aria-label="메뉴 열기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
     <div class="header-logo">Reference</div>
     <div class="header-search-bar">
       <input type="search" class="header-search-input" placeholder="What are you looking for?" aria-label="검색">
@@ -60,11 +65,13 @@
       </nav>
     </div>
   </aside>
+  <div class="sidebar-overlay" aria-hidden="true"></div>
   <main class="app-main">
     <h1 class="gallery-title">Discover</h1>
     <p style="color: var(--text-muted); margin-bottom: 24px;">팀에서 공유된 인터랙션을 탐색하세요.</p>
     <div class="gallery-grid" id="galleryGrid"></div>
   </main>
+  <script src="js/common.js"></script>
   <script src="js/data.js"></script>
   <script>
     function escapeHtml(s) { if (s == null) return ''; var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
@@ -88,8 +95,8 @@
           var embed = lib.previewEmbed;
           var isSpline = lib.isSpline || (String(lib.id || '').indexOf('upload-') === 0 && lib.embedCodes && typeof lib.embedCodes === 'object' && Object.keys(lib.embedCodes).length > 0);
           if (isSpline && embed.indexOf('setZoom(0.5)') === -1 && embed.indexOf('Application') !== -1 && embed.indexOf('.load(') !== -1) {
-            embed = embed.replace(/\.load\(\s*"([^"]*)"\s*\)\s*;/g, '.load("$1").then(function(){a.setZoom(0.5);});');
-            embed = embed.replace(/\.load\(\s*\'([^\']*)\'\s*\)\s*;/g, ".load('$1').then(function(){a.setZoom(0.5);});");
+            embed = embed.replace(/\.load\(\s*"([^"]*)"\s*\)\s*;?/g, '.load("$1").then(function(){a.setZoom(0.5);});');
+            embed = embed.replace(/\.load\(\s*\'([^\']*)\'\s*\)\s*;?/g, ".load('$1').then(function(){a.setZoom(0.5);});");
           }
           iframe.srcdoc = embed;
         }

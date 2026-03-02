@@ -95,3 +95,83 @@ function getLibraryById(id) {
 function getLibrariesForUser(author) {
   return getAllLibraries().filter((lib) => lib.author === author);
 }
+
+// 프로젝트: localStorage에 저장 (프로젝트 목록 + 프로젝트별 레퍼런스 ID 목록)
+var PROJECTS_KEY = 'interaction-library-projects';
+var PROJECT_REFS_KEY = 'interaction-library-project-refs';
+
+function getProjects() {
+  try {
+    var raw = localStorage.getItem(PROJECTS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
+}
+
+function saveProjects(projects) {
+  try {
+    localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+  } catch (e) {}
+}
+
+function getProjectRefsMap() {
+  try {
+    var raw = localStorage.getItem(PROJECT_REFS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) { return {}; }
+}
+
+function saveProjectRefsMap(map) {
+  try {
+    localStorage.setItem(PROJECT_REFS_KEY, JSON.stringify(map));
+  } catch (e) {}
+}
+
+function getProjectRefs(projectId) {
+  var map = getProjectRefsMap();
+  var list = map[projectId];
+  return Array.isArray(list) ? list : [];
+}
+
+function addRefToProject(projectId, libId) {
+  var map = getProjectRefsMap();
+  var list = map[projectId] ? map[projectId].slice() : [];
+  if (list.indexOf(String(libId)) === -1) list.push(String(libId));
+  map[projectId] = list;
+  saveProjectRefsMap(map);
+}
+
+function removeRefFromProject(projectId, libId) {
+  var map = getProjectRefsMap();
+  var list = map[projectId] ? map[projectId].slice() : [];
+  list = list.filter(function (id) { return id !== String(libId); });
+  map[projectId] = list;
+  saveProjectRefsMap(map);
+}
+
+function createProject(name) {
+  var projects = getProjects();
+  var id = 'project-' + Date.now();
+  projects.push({ id: id, name: String(name || '새 프로젝트').trim() || '새 프로젝트', createdAt: new Date().toISOString() });
+  saveProjects(projects);
+  return id;
+}
+
+function getProjectById(id) {
+  return getProjects().find(function (p) { return p.id === id; }) || null;
+}
+
+function updateProjectName(projectId, name) {
+  var projects = getProjects();
+  var i = projects.findIndex(function (p) { return p.id === projectId; });
+  if (i !== -1) {
+    projects[i].name = String(name || '').trim() || projects[i].name;
+    saveProjects(projects);
+  }
+}
+
+function deleteProject(projectId) {
+  saveProjects(getProjects().filter(function (p) { return p.id !== projectId; }));
+  var map = getProjectRefsMap();
+  delete map[projectId];
+  saveProjectRefsMap(map);
+}
