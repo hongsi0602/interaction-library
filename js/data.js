@@ -77,11 +77,102 @@ export function ConfettiDemo() {
   },
 ];
 
+// Supabase 사용 시 원격 업로드 캐시 (모든 사용자 공유)
+var uploadedLibrariesCache = [];
+
 function getUploadedLibraries() {
+  var supabase = typeof window !== 'undefined' && window.__SUPABASE__;
+  if (supabase && supabase.url && supabase.anonKey) {
+    return uploadedLibrariesCache;
+  }
   try {
     var raw = localStorage.getItem('interaction-library-uploads');
     return raw ? JSON.parse(raw) : [];
   } catch (e) { return []; }
+}
+
+function _rowToLib(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    author: row.author || 'me',
+    authorAvatar: row.author_avatar || 'H',
+    views: row.views || 0,
+    likes: row.likes || 0,
+    thumbnail: row.thumbnail || null,
+    previewUrl: row.preview_url || null,
+    previewEmbed: row.preview_embed || null,
+    embedCode: row.embed_code || '',
+    embedCodes: row.embed_codes || undefined,
+    description: row.description || '',
+    tags: Array.isArray(row.tags) ? row.tags : [],
+    createdAt: row.created_at || new Date().toISOString().slice(0, 10),
+    isSpline: !!row.is_spline
+  };
+}
+
+function fetchUploadsFromSupabase() {
+  var supabase = typeof window !== 'undefined' && window.__SUPABASE__;
+  if (!supabase || !supabase.url || !supabase.anonKey) return Promise.resolve();
+  var url = supabase.url.replace(/\/$/, '') + '/rest/v1/library_uploads?order=created_at.desc';
+  return fetch(url, {
+    method: 'GET',
+    headers: {
+      apikey: supabase.anonKey,
+      Authorization: 'Bearer ' + supabase.anonKey,
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(function (res) { return res.ok ? res.json() : []; })
+    .then(function (rows) {
+      uploadedLibrariesCache = (rows || []).map(_rowToLib);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('interaction-library-loaded'));
+      }
+    })
+    .catch(function () { uploadedLibrariesCache = []; });
+}
+
+function saveUploadToSupabase(item) {
+  var supabase = typeof window !== 'undefined' && window.__SUPABASE__;
+  if (!supabase || !supabase.url || !supabase.anonKey) return Promise.reject(new Error('Supabase not configured'));
+  var row = {
+    id: item.id,
+    title: item.title,
+    author: item.author || 'me',
+    author_avatar: item.authorAvatar || 'H',
+    views: item.views || 0,
+    likes: item.likes || 0,
+    thumbnail: item.thumbnail || null,
+    preview_url: item.previewUrl || null,
+    preview_embed: item.previewEmbed || null,
+    embed_code: item.embedCode || '',
+    embed_codes: item.embedCodes || null,
+    description: item.description || '',
+    tags: item.tags && item.tags.length ? item.tags : [],
+    created_at: (item.createdAt || '').slice(0, 10) || new Date().toISOString().slice(0, 10),
+    is_spline: !!item.isSpline
+  };
+  var url = supabase.url.replace(/\/$/, '') + '/rest/v1/library_uploads';
+  return fetch(url, {
+    method: 'POST',
+    headers: {
+      apikey: supabase.anonKey,
+      Authorization: 'Bearer ' + supabase.anonKey,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal'
+    },
+    body: JSON.stringify(row)
+  }).then(function (res) {
+    if (!res.ok) return res.text().then(function (t) { throw new Error(t || res.statusText); });
+  });
+}
+
+if (typeof window !== 'undefined') {
+  window.saveUploadToSupabase = saveUploadToSupabase;
+  if (window.__SUPABASE__ && window.__SUPABASE__.url && window.__SUPABASE__.anonKey) {
+    fetchUploadsFromSupabase();
+  }
 }
 
 function getAllLibraries() {

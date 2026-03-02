@@ -146,6 +146,7 @@
     </div>
   </main>
 
+  <script src="js/supabase-config.js"></script>
   <script src="js/common.js"></script>
   <script src="js/data.js"></script>
   <script>
@@ -198,8 +199,14 @@
       });
     }
 
-    var allLibraries = typeof getAllLibraries === 'function' ? getAllLibraries() : LIBRARIES;
-    renderCards(allLibraries);
+    function refreshList() {
+      var list = typeof getAllLibraries === 'function' ? getAllLibraries() : LIBRARIES;
+      var q = searchInput.value.trim().toLowerCase();
+      var filtered = q ? list.filter(function (l) { return l.title.toLowerCase().includes(q) || (l.author && l.author.toLowerCase().includes(q)); }) : list;
+      renderCards(filtered);
+    }
+    refreshList();
+    window.addEventListener('interaction-library-loaded', refreshList);
 
     document.querySelectorAll('.gallery-tab').forEach(function(btn) {
       btn.addEventListener('click', function() {
@@ -212,14 +219,7 @@
       });
     });
 
-    searchInput.addEventListener('input', () => {
-      const q = searchInput.value.trim().toLowerCase();
-      const list = typeof getAllLibraries === 'function' ? getAllLibraries() : LIBRARIES;
-      const filtered = q
-        ? list.filter((l) => l.title.toLowerCase().includes(q) || (l.author && l.author.toLowerCase().includes(q)))
-        : list;
-      renderCards(filtered);
-    });
+    searchInput.addEventListener('input', refreshList);
 
     if (window.location.search.indexOf('uploaded=1') !== -1) {
       try { window.history.replaceState({}, '', 'index.html'); } catch (e) {}

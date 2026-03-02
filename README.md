@@ -25,8 +25,9 @@ npx serve .
 
 ## 데이터
 
-- 목업: `js/data.js` (LIBRARIES + localStorage 업로드)
-- 실제 백엔드 연동 시 Supabase/Firebase 등으로 교체 가능
+- 목업: `js/data.js` (LIBRARIES + 업로드)
+- **업로드를 모든 사용자가 보게 하려면**: [SUPABASE-SETUP.md](SUPABASE-SETUP.md) 참고해 Supabase 프로젝트 생성 후 `js/supabase-config.js`에 URL·anon key를 넣으면, 업로드가 Supabase에 저장되어 공개됩니다.
+- 설정하지 않으면 업로드는 브라우저 localStorage에만 저장됩니다 (본인 기기에서만 표시).
 
 ## 무료 배포 (정적 사이트)
 

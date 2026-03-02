@@ -140,6 +140,7 @@
     </section>
   </main>
 
+  <script src="js/supabase-config.js"></script>
   <script src="js/common.js"></script>
   <script src="js/data.js"></script>
   <script>
@@ -340,6 +341,9 @@
     }
 
     window.addEventListener('hashchange', function () { location.reload(); });
+    window.addEventListener('interaction-library-loaded', function () {
+      if (id) location.reload();
+    });
   </script>
 </body>
 </html>

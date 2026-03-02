@@ -70,6 +70,7 @@
     <p style="color: var(--text-muted); margin-bottom: 24px;">내가 등록한 인터랙션 라이브러리입니다.</p>
     <div class="gallery-grid" id="galleryGrid"></div>
   </main>
+  <script src="js/supabase-config.js"></script>
   <script src="js/common.js"></script>
   <script src="js/data.js"></script>
   <script>
@@ -79,32 +80,36 @@
       if (lib.previewUrl && lib.previewUrl !== '#') return '<iframe src="' + escapeHtml(lib.previewUrl) + '" title="' + escapeHtml(lib.title) + ' 미리보기" loading="lazy"></iframe>';
       return '<img src="' + escapeHtml(lib.thumbnail || '') + '" alt="' + escapeHtml(lib.title) + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=600&q=80\'">';
     }
-    var myLibraries = getLibrariesForUser('hongsi');
     const grid = document.getElementById('galleryGrid');
-    if (!myLibraries.length) {
-      grid.innerHTML = '<p style="color: var(--text-muted);">등록한 라이브러리가 없습니다. <a href="register.html">Upload</a>에서 추가해 보세요.</p>';
-    } else {
-      grid.innerHTML = myLibraries.map(function(lib) {
-        var isSplineCard = lib.isSpline || (String(lib.id || '').indexOf('upload-') === 0 && lib.embedCodes && typeof lib.embedCodes === 'object' && Object.keys(lib.embedCodes).length > 0);
-        var cardClass = 'gallery-card' + (isSplineCard ? ' spline-card' : '');
-        return '<a href="detail.html#' + encodeURIComponent(lib.id) + '" class="' + cardClass + '"><div class="thumb"><div class="thumb-inner">' + thumbContent(lib) + '</div></div><div class="body"><h2 class="card-title">' + escapeHtml(lib.title) + '</h2><div class="meta"><span class="user-avatar">' + escapeHtml(lib.authorAvatar) + '</span><span>' + escapeHtml(lib.author) + '</span><span class="stats">' + lib.views + ' views · ' + lib.likes + ' likes</span></div></div></a>';
-      }).join('');
-      myLibraries.forEach(function(lib, i) {
-        if (lib.previewEmbed && lib.previewEmbed.trim()) {
-          var card = grid.children[i];
-          var iframe = card && card.querySelector('.thumb-inner iframe[data-preview-embed]');
-          if (iframe) {
-            var embed = lib.previewEmbed;
-            var isSpline = lib.isSpline || (String(lib.id || '').indexOf('upload-') === 0 && lib.embedCodes && typeof lib.embedCodes === 'object' && Object.keys(lib.embedCodes).length > 0);
-            if (isSpline && embed.indexOf('setZoom(0.5)') === -1 && embed.indexOf('Application') !== -1 && embed.indexOf('.load(') !== -1) {
-              embed = embed.replace(/\.load\(\s*"([^"]*)"\s*\)\s*;?/g, '.load("$1").then(function(){a.setZoom(0.5);});');
-              embed = embed.replace(/\.load\(\s*\'([^\']*)\'\s*\)\s*;?/g, ".load('$1').then(function(){a.setZoom(0.5);});");
+    function renderMyFiles() {
+      var myLibraries = getLibrariesForUser('hongsi').concat(getLibrariesForUser('me'));
+      if (!myLibraries.length) {
+        grid.innerHTML = '<p style="color: var(--text-muted);">등록한 라이브러리가 없습니다. <a href="register.html">Upload</a>에서 추가해 보세요.</p>';
+      } else {
+        grid.innerHTML = myLibraries.map(function(lib) {
+          var isSplineCard = lib.isSpline || (String(lib.id || '').indexOf('upload-') === 0 && lib.embedCodes && typeof lib.embedCodes === 'object' && Object.keys(lib.embedCodes).length > 0);
+          var cardClass = 'gallery-card' + (isSplineCard ? ' spline-card' : '');
+          return '<a href="detail.html#' + encodeURIComponent(lib.id) + '" class="' + cardClass + '"><div class="thumb"><div class="thumb-inner">' + thumbContent(lib) + '</div></div><div class="body"><h2 class="card-title">' + escapeHtml(lib.title) + '</h2><div class="meta"><span class="user-avatar">' + escapeHtml(lib.authorAvatar) + '</span><span>' + escapeHtml(lib.author) + '</span><span class="stats">' + lib.views + ' views · ' + lib.likes + ' likes</span></div></div></a>';
+        }).join('');
+        myLibraries.forEach(function(lib, i) {
+          if (lib.previewEmbed && lib.previewEmbed.trim()) {
+            var card = grid.children[i];
+            var iframe = card && card.querySelector('.thumb-inner iframe[data-preview-embed]');
+            if (iframe) {
+              var embed = lib.previewEmbed;
+              var isSpline = lib.isSpline || (String(lib.id || '').indexOf('upload-') === 0 && lib.embedCodes && typeof lib.embedCodes === 'object' && Object.keys(lib.embedCodes).length > 0);
+              if (isSpline && embed.indexOf('setZoom(0.5)') === -1 && embed.indexOf('Application') !== -1 && embed.indexOf('.load(') !== -1) {
+                embed = embed.replace(/\.load\(\s*"([^"]*)"\s*\)\s*;?/g, '.load("$1").then(function(){a.setZoom(0.5);});');
+                embed = embed.replace(/\.load\(\s*\'([^\']*)\'\s*\)\s*;?/g, ".load('$1').then(function(){a.setZoom(0.5);});");
+              }
+              iframe.srcdoc = embed;
             }
-            iframe.srcdoc = embed;
           }
-        }
-      });
+        });
+      }
     }
+    renderMyFiles();
+    window.addEventListener('interaction-library-loaded', renderMyFiles);
   </script>
 </body>
 </html>

@@ -163,6 +163,8 @@
       </div>
     </form>
   </main>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/data.js"></script>
   <script src="js/common.js"></script>
   <script>
     (function() {
@@ -260,17 +262,31 @@
           isSpline: !!isSpline
         };
 
-        try {
-          var list = [];
-          try {
-            var raw = localStorage.getItem('interaction-library-uploads');
-            if (raw) list = JSON.parse(raw);
-          } catch (err) {}
-          list.push(item);
-          localStorage.setItem('interaction-library-uploads', JSON.stringify(list));
+        var saveDone = function () {
           window.location.href = 'index.html?uploaded=1';
-        } catch (err) {
-          alert('저장에 실패했습니다. ' + (err.message || ''));
+        };
+        var saveFail = function (err) {
+          alert('저장에 실패했습니다. ' + (err && err.message ? err.message : ''));
+        };
+        if (typeof window.saveUploadToSupabase === 'function' && window.__SUPABASE__ && window.__SUPABASE__.url && window.__SUPABASE__.anonKey) {
+          var btn = form.querySelector('.btn-submit');
+          if (btn) { btn.disabled = true; btn.textContent = '업로드 중…'; }
+          window.saveUploadToSupabase(item).then(saveDone).catch(saveFail).then(function () {
+            if (btn) { btn.disabled = false; btn.textContent = 'Upload'; }
+          });
+        } else {
+          try {
+            var list = [];
+            try {
+              var raw = localStorage.getItem('interaction-library-uploads');
+              if (raw) list = JSON.parse(raw);
+            } catch (err) {}
+            list.push(item);
+            localStorage.setItem('interaction-library-uploads', JSON.stringify(list));
+            saveDone();
+          } catch (err) {
+            saveFail(err);
+          }
         }
       });
     })();
