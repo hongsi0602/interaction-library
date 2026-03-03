@@ -74,5 +74,14 @@ create policy "Anyone can insert library_uploads"
 
 3. 파일 **저장** 후, 사이트를 **새로고침** 합니다.
 
-이제 Upload로 올린 항목은 Supabase에 저장되고, 같은 사이트를 여는 **모든 사람**이 볼 수 있습니다.  
-이 단계를 하지 않으면 이전처럼 **localStorage**만 사용해서, 본인 기기에서만 보입니다.
+### 다른 브라우저에서 업로드한 게 안 보일 때
+
+**anonKey**에 **Legacy anon** 키를 써야 합니다.
+
+1. Supabase **Settings → API Keys** 로 갑니다.
+2. 상단 탭에서 **"Legacy anon, service_role API keys"** 를 클릭합니다.
+3. **anon** (public) 키를 **전체** 복사합니다. (`eyJ` 로 시작하는 긴 문자열입니다.)
+4. **`js/supabase-config.js`** 의 **anonKey** 에 이 값만 붙여넣고 저장합니다.  
+   (Publishable key `sb_publishable_...` 는 REST에서 목록이 안 나올 수 있어서 Legacy anon 사용을 권장합니다.)
+
+이제 Upload로 올린 항목은 Supabase에 저장되고, 같은 사이트를 여는 **모든 사람**이 볼 수 있습니다.
