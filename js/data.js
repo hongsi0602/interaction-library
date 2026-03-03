@@ -115,14 +115,11 @@ function fetchUploadsFromSupabase() {
   var supabase = typeof window !== 'undefined' && window.__SUPABASE__;
   if (!supabase || !supabase.url || !supabase.anonKey) return Promise.resolve();
   var url = supabase.url.replace(/\/$/, '') + '/rest/v1/library_uploads?order=created_at.desc';
-  return fetch(url, {
-    method: 'GET',
-    headers: {
-      apikey: supabase.anonKey,
-      Authorization: 'Bearer ' + supabase.anonKey,
-      'Content-Type': 'application/json'
-    }
-  })
+  var headers = { apikey: supabase.anonKey, 'Content-Type': 'application/json' };
+  if (supabase.anonKey.indexOf('eyJ') === 0) {
+    headers.Authorization = 'Bearer ' + supabase.anonKey;
+  }
+  return fetch(url, { method: 'GET', headers: headers })
     .then(function (res) { return res.ok ? res.json() : []; })
     .then(function (rows) {
       uploadedLibrariesCache = (rows || []).map(_rowToLib);
@@ -154,16 +151,11 @@ function saveUploadToSupabase(item) {
     is_spline: !!item.isSpline
   };
   var url = supabase.url.replace(/\/$/, '') + '/rest/v1/library_uploads';
-  return fetch(url, {
-    method: 'POST',
-    headers: {
-      apikey: supabase.anonKey,
-      Authorization: 'Bearer ' + supabase.anonKey,
-      'Content-Type': 'application/json',
-      Prefer: 'return=minimal'
-    },
-    body: JSON.stringify(row)
-  }).then(function (res) {
+  var headers = { apikey: supabase.anonKey, 'Content-Type': 'application/json', Prefer: 'return=minimal' };
+  if (supabase.anonKey.indexOf('eyJ') === 0) {
+    headers.Authorization = 'Bearer ' + supabase.anonKey;
+  }
+  return fetch(url, { method: 'POST', headers: headers, body: JSON.stringify(row) }).then(function (res) {
     if (!res.ok) return res.text().then(function (t) { throw new Error(t || res.statusText); });
   });
 }
